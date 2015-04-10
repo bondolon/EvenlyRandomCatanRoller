@@ -11,179 +11,144 @@ namespace WindowsFormsApplication1
 {
     public partial class Form1 : Form
     {
-        public static readonly string[] Tiles = new string[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "AA", "BB" };
-        private static readonly List<string> _usableTiles = new List<string>(Tiles);
-        private static readonly Dictionary<string, int> _tileHistory = new Dictionary<string,int>();
+        private const double _weightingNumber = 1.5d;
 
-        public static Dictionary<string, string> MappedTiles = null;
+        private static readonly Dictionary<string, int> _boardCounts = new Dictionary<string, int> { { "18+1D", 18 }, { "28+2D", 28 } };
 
-        private Random _roller = new Random();
+        private static readonly Dictionary<string, RandomnessType> _randomnessTypes = new Dictionary<string, RandomnessType> 
+        { 
+            { "Pure", RandomnessType.Fully }, 
+            { "Binned Exhaustion", RandomnessType.ExhaustivelyBinned }, 
+            { "Weighted", RandomnessType.ReverseWeighted } 
+        };
 
-        private int _turnNumber = 0;
+        public RollerBase _roller;
+
         private List<string> _turnHistory = new List<string>();
         private int _robberCount = 0;
-        private bool _evenExhaustion = false;
-        
+
         public Form1()
         {
             InitializeComponent();
 
-            foreach (var tile in Tiles)
+            foreach (var tileCount in _boardCounts.Keys)
             {
-                _tileHistory.Add(tile, 0);
+                _tileCountSelector.Items.Add(tileCount);
             }
 
-            _robberLocation.DataSource = new List<string>(new string[] { "DESERT" }.Concat(Tiles));
+            _tileCountSelector.SelectedIndex = 0;
+
+            foreach (var randomnessType in _randomnessTypes.Keys)
+            {
+                _randomnessTypeSelector.Items.Add(randomnessType);
+            }
+
+            _randomnessTypeSelector.SelectedIndex = 0;
 
             _turnStatus.Text = _firstTile.Text = _secondTile.Text = _thirdTile.Text = "";
-            linkLabel1.Select();
+            _deletePlayerLink.Select();
         }
 
         private void _rollButton_Click(object sender, EventArgs e)
         {
-            if (_turnNumber == 0)
-            {
-                linkLabel1.Visible = linkLabel2.Visible = _assignPropertiesLink.Visible = false;
-                _evenExhaustion = _enableEvenExhaustion.Checked;
-                _enableEvenExhaustion.Enabled = false;
-            }
+            _deletePlayerLink.Enabled = _deletePlayerLink.Visible = 
+                _addPlayerLink.Enabled = _addPlayerLink.Visible = 
+                _assignPropertiesLink.Enabled = _assignPropertiesLink.Visible =
+                _randomnessTypeSelector.Enabled = 
+                _tileCountSelector.Enabled = 
+                false;
 
             _turnStatus.Text = _firstTile.Text = _secondTile.Text = _thirdTile.Text = string.Empty;
 
-            List<string> tiles = new List<string>();
+            if (_roller == null)
+            {
+                var randomnessType = _randomnessTypes[(string)_randomnessTypeSelector.SelectedItem];
 
-            int dieA = _roller.Next(1, 6);
-            int dieB = _roller.Next(1, 6);
+                int tileCount = _boardCounts[(string)_tileCountSelector.SelectedItem];
+                switch (randomnessType)
+                {
+                    case RandomnessType.Fully:
+                        _roller = new FullyRandomRoller(tileCount);
+                        break;
 
-            _turnNumber++;
+                    case RandomnessType.ExhaustivelyBinned:
+                        _roller = new ExhaustivelyBinnedRoller(tileCount);
+                        break;
+
+                    case RandomnessType.ReverseWeighted:
+                        _roller = new ReverseWeightedRoller(tileCount);
+                        break;
+
+                    case RandomnessType.Unknown:
+                    default:
+                        return;
+                }
+
+                _robberLocation.DataSource = new List<string>(new string[] { "DESERT" }.Concat(_roller.TileHistory.Keys));
+                _robberLocation.Visible = _robberLocationLabel.Visible = true;
+
+                _assignPropertiesLink_LinkClicked(sender, null);
+            }
+
+            _roller.Roll((string)_robberLocation.SelectedItem);
 
             _playersList.ClearSelected();
-            _playersList.SetSelected((_turnNumber - 1) % _playersList.Items.Count, true);
+            _playersList.SetSelected((_roller.TurnNumber - 1) % _playersList.Items.Count, true);
 
-            _turnStatus.Text = string.Format("TURN {0} - {1}", _turnNumber, _playersList.SelectedItem);
+            _turnStatus.Text = string.Format("TURN {0} - {1}", _roller.TurnNumber, _playersList.SelectedItem);
 
-            string historyText = string.Format("{0} ({1}) - ", _turnNumber, _playersList.SelectedItem);
+            _firstTile.Text = _roller.FirstTile;
+            _secondTile.Text = _roller.SecondTile;
 
-            if (dieA + dieB == 7) //Robber
+            if (!string.IsNullOrEmpty(_roller.ThirdTile))
             {
-                historyText += "ROBBER";
-                _firstTile.Text = "HANDS";
-                _secondTile.Text = "UP";
-                _thirdTile.Text = "PARTNER!!";
+                _thirdTile.Text = _roller.ThirdTile;
+            }
 
+            _letterDistributionByLetter.Text = string.Empty;
+
+            foreach (var letterKey in _roller.TileHistory.Keys)
+            {
+                _letterDistributionByLetter.Text += string.Format("{0}, {1} ({2})\r\n", letterKey, _roller.TileHistory[letterKey], ((((double)_roller.TileHistory[letterKey]) / _roller.TurnNumber)).ToString("P1"));
+            }
+
+            _letterDistributionByCount.Text = string.Empty;
+
+            foreach (var letter in _roller.TileHistory.OrderByDescending(letterPair => letterPair.Value))
+            {
+                _letterDistributionByCount.Text += string.Format("{0}: {1}\r\n", letter.Key, letter.Value);
+            }
+
+            var mean = new KeyValuePair<string, int>("", 0);
+            var meanNumber = _roller.TileHistory.Values.Sum() / 2;
+
+            var runningStatTotal = 0;
+            foreach (var key in _roller.TileHistory.Keys)
+            {
+                runningStatTotal += _roller.TileHistory[key];
+
+                if (runningStatTotal > meanNumber)
+                {
+                    mean = new KeyValuePair<string, int>(key, _roller.TileHistory[key]);
+                    break;
+                }
+            }
+
+            var organizedListByCount = new List<KeyValuePair<string, int>>(_roller.TileHistory.OrderBy(x => x.Value));
+            var median = organizedListByCount[(organizedListByCount.Count / 2) + 1];
+            var mode = organizedListByCount[organizedListByCount.Count - 1];
+
+            _letterDistributionAnalysis.Text = string.Format("Mean: {0} Median: {1} Mode: {2}", mean, median, mode);
+
+            if (_roller.TurnOutcome == RollerBase.ROBBER_TEXT)
+            {
                 _robberLocation.Focus();
                 _robberCount++;
-            }
-            else
-            {
-                int resourceCount = 3;
 
-                if (dieA == dieB && (dieA == 1 || dieA == 6))
-                {
-                    resourceCount = 2;
-                }
-
-                List<int> usedIndices = new List<int>();
-
-                while (usedIndices.Count < resourceCount)
-                {
-                    int index = _roller.Next(0, _usableTiles.Count);
-                    
-                    if (!usedIndices.Contains(index))
-                    {
-                        var tileText = _usableTiles[index];
-
-                        if (_evenExhaustion)
-                        {
-                            while (_usableTiles[index] == string.Empty)
-                            {
-                                index = _roller.Next(0, _usableTiles.Count);
-                            }
-
-                            tileText = _usableTiles[index];    
-                        }
-
-                        usedIndices.Add(index);
-
-                        if (MappedTiles == null)
-                        {                            
-                            historyText += tileText + (tileText == ((string)_robberLocation.SelectedItem) ? "*" : "") + " ";
-                        }
-                        else
-                        {
-                            historyText += tileText + (tileText == ((string)_robberLocation.SelectedItem) ? "*" : "") + " (" + MappedTiles[tileText][0] + "), ";
-                        }
-
-                        _tileHistory[tileText] = _tileHistory[tileText] + 1;
-
-                        var testedTileText = tileText;
-                        if (tileText == (string)_robberLocation.SelectedItem)
-                        {
-                            testedTileText = "*";
-                        }
-
-                        if (testedTileText != "*" && MappedTiles != null)
-                        {
-                            testedTileText += " (" + MappedTiles[tileText] + ")";
-                        }
-
-                        if (usedIndices.Count == 1)
-                        {
-                            _firstTile.Text = testedTileText;
-                        }
-                        else if (usedIndices.Count == 2)
-                        {
-                            _secondTile.Text = testedTileText;
-                        }
-                        else
-                        {
-                            _thirdTile.Text = testedTileText;
-                        }
-
-                        _usableTiles.RemoveAll(x => x == string.Empty);
-                    }
-                }
-
-                _letterDistributionByLetter.Text = string.Empty;
-
-                foreach (var letterKey in _tileHistory.Keys)
-                {
-                    _letterDistributionByLetter.Text += string.Format("{0}, {1} ({2})\r\n", letterKey, _tileHistory[letterKey], ((((double)_tileHistory[letterKey]) / _turnNumber)).ToString("P1"));
-                }
-
-                _letterDistributionByCount.Text = string.Empty;
-
-                foreach (var letter in _tileHistory.OrderByDescending(letterPair => letterPair.Value))
-                {
-                    _letterDistributionByCount.Text += string.Format("{0}: {1}\r\n", letter.Key, letter.Value);
-                }
-
-
-                var mean = new KeyValuePair<string, int>("", 0);
-                var meanNumber = _tileHistory.Values.Sum() / 2;
-
-                var runningTotal = 0;
-                foreach (var key in _tileHistory.Keys)
-                {
-                    runningTotal += _tileHistory[key];
-
-                    if (runningTotal > meanNumber)
-                    {
-                        mean = new KeyValuePair<string, int>(key, _tileHistory[key]);
-                        break;
-                    }
-                }
-
-                var organizedListByCount = new List<KeyValuePair<string, int>>(_tileHistory.OrderBy(x => x.Value));
-                var median = organizedListByCount[(organizedListByCount.Count / 2) + 1];
-                var mode = organizedListByCount[organizedListByCount.Count - 1];
-
-                _letterDistributionAnalysis.Text = string.Format("Mean: {0} Median: {1} Mode: {2}", mean, median, mode);
+                _gameStatistics.Text = string.Format("Robber Turns: {0}", _robberCount);
             }
 
-            _gameStatistics.Text = string.Format("Robber Turns: {0}", _robberCount);
-
-            _turnHistory.Add(historyText.TrimEnd(',', ' '));
+            _turnHistory.Add(string.Format("{0} ({1}) - {2}", _roller.TurnNumber, _playersList.SelectedItem, _roller.TurnOutcome));
             _turnHistoryText.Clear();
 
             for (int i = _turnHistory.Count - 1; i >= 0; i--)
@@ -217,17 +182,17 @@ namespace WindowsFormsApplication1
 
         private void _assignPropertiesLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            AssignResourcesDialog dialog = new AssignResourcesDialog();
+            AssignResourcesDialog dialog = new AssignResourcesDialog(_roller.UsableTiles);
 
             dialog.ShowDialog();
 
             if (dialog.DialogResult == System.Windows.Forms.DialogResult.OK)
             {
-                MappedTiles = new Dictionary<string, string>();
+                RollerBase.MappedTiles = new Dictionary<string, string>();
 
                 foreach (ResourceSelector selector in dialog.flowLayoutPanel1.Controls)
                 {
-                    MappedTiles.Add(selector.Letter.Text, (string)selector.ResourceType.SelectedItem);
+                    RollerBase.MappedTiles.Add(selector.Letter.Text, (string)selector.ResourceType.SelectedItem);
                 }
             }
         }

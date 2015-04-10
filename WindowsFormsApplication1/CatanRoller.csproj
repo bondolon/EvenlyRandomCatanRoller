@@ -58,20 +58,25 @@
     <Compile Include="AssignResourcesDialog.Designer.cs">
       <DependentUpon>AssignResourcesDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="ExhaustivelyBinnedRoller.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="FullyRandomRoller.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RandomnessType.cs" />
     <Compile Include="ResourceSelector.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="ResourceSelector.Designer.cs">
       <DependentUpon>ResourceSelector.cs</DependentUpon>
     </Compile>
+    <Compile Include="ReverseWeightedRoller.cs" />
+    <Compile Include="RollerBase.cs" />
     <EmbeddedResource Include="AddPlayerDialog.resx">
       <DependentUpon>AddPlayerDialog.cs</DependentUpon>
     </EmbeddedResource>

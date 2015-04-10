@@ -11,20 +11,22 @@ namespace WindowsFormsApplication1
 {
     public partial class AssignResourcesDialog : Form
     {
-        public AssignResourcesDialog()
+        public AssignResourcesDialog(List<string> tiles)
         {
             InitializeComponent();
 
-            foreach (var tile in Form1.Tiles)
+            foreach (var tile in tiles)
             {
-                if (Form1.MappedTiles == null)
-                {
-                    flowLayoutPanel1.Controls.Add(new ResourceSelector(tile));
-                }
-                else
-                {
-                    flowLayoutPanel1.Controls.Add(new ResourceSelector(tile, Form1.MappedTiles[tile]));
-                }
+                flowLayoutPanel1.Controls.Add(new ResourceSelector(tile));
+
+                //if (Form1.MappedTiles == null)
+                //{
+                //    flowLayoutPanel1.Controls.Add(new ResourceSelector(tile));
+                //}
+                //else
+                //{
+                //    flowLayoutPanel1.Controls.Add(new ResourceSelector(tile, Form1.MappedTiles[tile]));
+                //}
             }
         }
 

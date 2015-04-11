@@ -59,11 +59,18 @@ namespace WindowsFormsApplication1
             }
             else
             {
-                int resourceCount = 3;
+                int resourceCount = 2;
 
                 if (dieA == dieB && (dieA == 1 || dieA == 6))
                 {
-                    resourceCount = 2;
+                    if (_tileCount == 18)
+                    {
+                        resourceCount = 1;
+                    }
+                }
+                else if (_tileCount == 28)
+                {
+                    resourceCount = 3;
                 }
 
                 while (_usedIndices.Count < resourceCount)
@@ -74,7 +81,11 @@ namespace WindowsFormsApplication1
                 SetTurnOutcomeText();
 
                 TileHistory[FirstTile] += 1;
-                TileHistory[SecondTile] += 1;
+
+                if (!string.IsNullOrEmpty(SecondTile))
+                {
+                    TileHistory[SecondTile] += 1;
+                }
 
                 if (!string.IsNullOrEmpty(ThirdTile))
                 {

@@ -19,11 +19,11 @@ namespace WindowsFormsApplication1
 
         private static readonly Dictionary<string, RandomnessType> _randomnessTypes = new Dictionary<string, RandomnessType> 
         { 
+            { "Catan-like Grouping", RandomnessType.GroupedSelection },
+            { "Weighted", RandomnessType.ReverseWeighted },
             { "Pure", RandomnessType.Fully }, 
             { "Binned Exhaustion", RandomnessType.ExhaustivelyBinned }, 
-            { "Weighted", RandomnessType.ReverseWeighted },
 //            { "Mult. Weighted", RandomnessType.ReverseMultiplicativeWeighted },
-            { "Catan-like Grouping", RandomnessType.GroupedSelection },
         };
 
         public RollerBase _roller;
@@ -65,9 +65,10 @@ namespace WindowsFormsApplication1
 
             _baseWeightSelector.Value = 1;
             _addWeightSelector.Value = 2;
+            _tileCountSelector.SelectedIndex = 1;
 
             _rollButton.Enabled = true;
-            _randomnessTypeSelector.SelectedIndex = 2;
+            _randomnessTypeSelector.SelectedIndex = 0;
             _randomnessTypeSelector_SelectionChangeCommitted(null, null);            
 #endif
         }
@@ -216,6 +217,7 @@ namespace WindowsFormsApplication1
             gameRecords[game] = _roller.TileHistory;
 
             _roller = null;
+            System.Threading.Thread.Sleep(10);
     
             }
 

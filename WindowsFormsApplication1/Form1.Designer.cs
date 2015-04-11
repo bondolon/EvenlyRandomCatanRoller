@@ -540,6 +540,7 @@
             // _doubleRefreshSelector
             // 
             this._doubleRefreshSelector.AutoSize = true;
+            this._doubleRefreshSelector.Enabled = false;
             this._doubleRefreshSelector.Location = new System.Drawing.Point(8, 23);
             this._doubleRefreshSelector.Name = "_doubleRefreshSelector";
             this._doubleRefreshSelector.Size = new System.Drawing.Size(78, 17);

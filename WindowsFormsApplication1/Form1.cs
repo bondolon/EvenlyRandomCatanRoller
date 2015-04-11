@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define TESTROLL
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,13 +21,20 @@ namespace WindowsFormsApplication1
         { 
             { "Pure", RandomnessType.Fully }, 
             { "Binned Exhaustion", RandomnessType.ExhaustivelyBinned }, 
-            { "Weighted", RandomnessType.ReverseWeighted } 
+            { "Weighted", RandomnessType.ReverseWeighted },
+//            { "Mult. Weighted", RandomnessType.ReverseMultiplicativeWeighted },
+            { "Catan-like Grouping", RandomnessType.GroupedSelection },
         };
 
         public RollerBase _roller;
 
         private List<string> _turnHistory = new List<string>();
         private int _robberCount = 0;
+
+#if TESTROLL
+        private int _sampleSize = 50;
+        private int _gameCount = 1000;
+#endif
 
         public Form1()
         {
@@ -47,6 +56,20 @@ namespace WindowsFormsApplication1
 
             _turnStatus.Text = _firstTile.Text = _secondTile.Text = _thirdTile.Text = "";
             _deletePlayerLink.Select();
+
+#if TESTROLL
+            _playersList.Items.Add("Agrippa");
+            _playersList.Items.Add("Babbage");
+            _playersList.Items.Add("Calvin");
+            _playersList.Items.Add("Democritus");
+
+            _baseWeightSelector.Value = 1;
+            _addWeightSelector.Value = 2;
+
+            _rollButton.Enabled = true;
+            _randomnessTypeSelector.SelectedIndex = 2;
+            _randomnessTypeSelector_SelectionChangeCommitted(null, null);            
+#endif
         }
 
         private void _rollButton_Click(object sender, EventArgs e)
@@ -56,10 +79,18 @@ namespace WindowsFormsApplication1
                 _assignPropertiesLink.Enabled = _assignPropertiesLink.Visible =
                 _randomnessTypeSelector.Enabled = 
                 _tileCountSelector.Enabled = 
+                _baseWeightSelector.Enabled =
+                _addWeightSelector.Enabled =
                 false;
 
             _turnStatus.Text = _firstTile.Text = _secondTile.Text = _thirdTile.Text = string.Empty;
 
+#if TESTROLL
+            Dictionary<int, Dictionary<string, int>> gameRecords = new Dictionary<int, Dictionary<string, int>>();
+
+            for (int game = 0; game < _gameCount; game++)
+            {
+#endif
             if (_roller == null)
             {
                 var randomnessType = _randomnessTypes[(string)_randomnessTypeSelector.SelectedItem];
@@ -76,7 +107,22 @@ namespace WindowsFormsApplication1
                         break;
 
                     case RandomnessType.ReverseWeighted:
-                        _roller = new ReverseWeightedRoller(tileCount);
+                        _roller = new ReverseWeightedRoller(tileCount, (int)_baseWeightSelector.Value, (int)_addWeightSelector.Value);
+                        break;
+
+                    case RandomnessType.ReverseMultiplicativeWeighted:
+                        _roller = new ReverseMultiplicativeWeightedRoller(tileCount, (int)_weightFactorSelector.Value);
+                        break;
+
+                    case RandomnessType.GroupedSelection:
+                        int refreshTurns = _playersList.Items.Count;
+
+                        if (_doubleRefreshSelector.Checked)
+                        {
+                            refreshTurns /= 2;
+                        }
+
+                        _roller = new GroupedSelection(tileCount, _refreshGroupingsSelector.Checked, refreshTurns);
                         break;
 
                     case RandomnessType.Unknown:
@@ -85,13 +131,21 @@ namespace WindowsFormsApplication1
                 }
 
                 _robberLocation.DataSource = new List<string>(new string[] { "DESERT" }.Concat(_roller.TileHistory.Keys));
-                _robberLocation.Visible = _robberLocationLabel.Visible = true;
+                _robberSettings.Visible = true;
 
+#if !TESTROLL
                 _assignPropertiesLink_LinkClicked(sender, null);
+#endif
             }
+
+#if TESTROLL
+            for (int zasdfasdf = 0; zasdfasdf < _sampleSize; zasdfasdf++)
+            {
+#endif
 
             _roller.Roll((string)_robberLocation.SelectedItem);
 
+#if !TESTROLL
             _playersList.ClearSelected();
             _playersList.SetSelected((_roller.TurnNumber - 1) % _playersList.Items.Count, true);
 
@@ -149,12 +203,38 @@ namespace WindowsFormsApplication1
             }
 
             _turnHistory.Add(string.Format("{0} ({1}) - {2}", _roller.TurnNumber, _playersList.SelectedItem, _roller.TurnOutcome));
+
             _turnHistoryText.Clear();
 
             for (int i = _turnHistory.Count - 1; i >= 0; i--)
             {
                 _turnHistoryText.Text += _turnHistory[i] + "\r\n";
             }
+#else
+            }
+
+            gameRecords[game] = _roller.TileHistory;
+
+            _roller = null;
+    
+            }
+
+            double sum = 0.0d;
+
+            foreach (var game in gameRecords.Keys)
+            {
+                var tileValues = gameRecords[game].Select(x => Convert.ToDouble(x.Value)).ToList();
+
+                double average = tileValues.Sum() / (double)tileValues.Count;
+                double sumOfSquaresOfDifferences = tileValues.Select(val => (val - average) * (val - average)).Sum();
+                double standardDeviation = Math.Sqrt(sumOfSquaresOfDifferences / tileValues.Count);
+
+                sum += standardDeviation;
+                _turnHistoryText.Text += string.Format("{0}\t{1}\r\n", game + 1, standardDeviation);
+            }
+
+            _turnHistoryText.Text += sum / (double)_gameCount;
+#endif
         }
 
         private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -195,6 +275,18 @@ namespace WindowsFormsApplication1
                     RollerBase.MappedTiles.Add(selector.Letter.Text, (string)selector.ResourceType.SelectedItem);
                 }
             }
+        }
+
+        private void _randomnessTypeSelector_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            _weightingSettings.Visible = (_randomnessTypes[(string)_randomnessTypeSelector.SelectedItem] == RandomnessType.ReverseWeighted);
+            _multiplicativeSettings.Visible = (_randomnessTypes[(string)_randomnessTypeSelector.SelectedItem] == RandomnessType.ReverseMultiplicativeWeighted);
+            _groupSelectSettings.Visible = (_randomnessTypes[(string)_randomnessTypeSelector.SelectedItem] == RandomnessType.GroupedSelection);
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            _doubleRefreshSelector.Enabled = _refreshGroupingsSelector.Checked;
         }
     }
 }

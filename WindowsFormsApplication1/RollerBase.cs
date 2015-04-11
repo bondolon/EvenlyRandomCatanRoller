@@ -68,7 +68,7 @@ namespace WindowsFormsApplication1
 
                 while (_usedIndices.Count < resourceCount)
                 {
-                    SingleRoll();
+                    SingleRoll(dieA + dieB);
                 }
 
                 SetTurnOutcomeText();
@@ -148,7 +148,7 @@ namespace WindowsFormsApplication1
             TurnOutcome = TurnOutcome.TrimEnd(' ', ',');
         }
 
-        protected virtual void SingleRoll()
+        protected virtual void SingleRoll(int roll)
         {
             throw new NotImplementedException("No valid randomness type was selected.");
         }

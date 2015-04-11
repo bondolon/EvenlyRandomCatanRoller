@@ -12,7 +12,7 @@ namespace WindowsFormsApplication1
 
         }
 
-        protected override void SingleRoll()
+        protected override void SingleRoll(int roll) //ignore roll
         {
             int index = _roller.Next(0, UsableTiles.Count);
 

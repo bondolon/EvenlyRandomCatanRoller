@@ -11,5 +11,7 @@ namespace WindowsFormsApplication1
         Fully = 1,
         ExhaustivelyBinned = 2,
         ReverseWeighted = 3,
+        ReverseMultiplicativeWeighted = 4,
+        GroupedSelection = 5,
     }
 }

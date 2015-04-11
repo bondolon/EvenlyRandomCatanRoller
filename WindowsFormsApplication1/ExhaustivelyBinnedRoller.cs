@@ -15,7 +15,7 @@ namespace WindowsFormsApplication1
             _tileBin = new List<string>(UsableTiles);
         }
 
-        protected override void SingleRoll()
+        protected override void SingleRoll(int roll) //ignore roll
         {
             if (_tileBin.Count == 0)
             {

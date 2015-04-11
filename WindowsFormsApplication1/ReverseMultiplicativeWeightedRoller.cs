@@ -5,31 +5,44 @@ using System.Text;
 
 namespace WindowsFormsApplication1
 {
-    class ReverseWeightedRoller : RollerBase
+    class ReverseMultiplicativeWeightedRoller : RollerBase
     {
-        public ReverseWeightedRoller(int tileCount, int baseWeight, int addWeight)
+        public ReverseMultiplicativeWeightedRoller(int tileCount, int weightFactor)
             : base(tileCount)
         {
             foreach (var tile in UsableTiles)
             {
-                _weightedUsableTiles[tile] = baseWeight;
+                _weightedUsableTiles[tile] = 1;
             }
 
-            _addWeight = addWeight;
+            _weightFactor = weightFactor;
         }
 
-        private readonly Dictionary<string, int> _weightedUsableTiles = new Dictionary<string, int>();
+        private readonly Dictionary<string, decimal> _weightedUsableTiles = new Dictionary<string, decimal>();
 
-        private int _addWeight;
+        private int _weightFactor;
 
         protected override void SingleRoll(int roll) //ignore roll
         {
+            const decimal minimum = 1m;
+
             var totalSum = _weightedUsableTiles.Values.Sum();
 
-            var rolledValue = _roller.Next(1, totalSum);
+            byte s = 0;
+            for (byte i = 0; i <= 28; i++)
+            {
+                if (_roller.NextDouble() >= 0.1)
+                    s = i;
+            }
+
+            var a = (int)(uint.MaxValue * _roller.NextDouble());
+            var b = (int)(uint.MaxValue * _roller.NextDouble());
+            var c = (int)(uint.MaxValue * _roller.NextDouble());
+            var n = _roller.NextDouble() >= 0.5;
+            var rolledValue = (new Decimal(a, b, c, n, s) * (totalSum - minimum)) + minimum;
 
             int index = 0;
-            int runningTotal = 0;
+            decimal runningTotal = 0m;
             foreach (var tile in _weightedUsableTiles.Keys)
             {
                 runningTotal += _weightedUsableTiles[tile];
@@ -53,7 +66,7 @@ namespace WindowsFormsApplication1
                         {
                             if (!_usedIndices.Contains(i))
                             {
-                                _weightedUsableTiles[UsableTiles[i]] += _addWeight;
+                                _weightedUsableTiles[UsableTiles[i]] *= _weightFactor;
                             }
                         }
                     }

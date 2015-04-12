@@ -1,6 +1,6 @@
 ﻿namespace WindowsFormsApplication1
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -45,7 +45,7 @@
             this._robberLocation = new System.Windows.Forms.ComboBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this._assignPropertiesLink = new System.Windows.Forms.LinkLabel();
-            this._gameStatistics = new System.Windows.Forms.TextBox();
+            this._robberStatistics = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this._letterDistributionByCount = new System.Windows.Forms.TextBox();
             this._letterDistributionByLetter = new System.Windows.Forms.TextBox();
@@ -63,8 +63,9 @@
             this._weightFactorSelector = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
             this._groupSelectSettings = new System.Windows.Forms.Panel();
-            this._refreshGroupingsSelector = new System.Windows.Forms.CheckBox();
             this._doubleRefreshSelector = new System.Windows.Forms.CheckBox();
+            this._refreshGroupingsSelector = new System.Windows.Forms.CheckBox();
+            this._startNewGameButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -83,7 +84,7 @@
             // 
             this._rollButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._rollButton.Enabled = false;
-            this._rollButton.Location = new System.Drawing.Point(900, 13);
+            this._rollButton.Location = new System.Drawing.Point(981, 13);
             this._rollButton.Name = "_rollButton";
             this._rollButton.Size = new System.Drawing.Size(75, 23);
             this._rollButton.TabIndex = 0;
@@ -100,7 +101,7 @@
             this._turnStatus.Location = new System.Drawing.Point(12, 43);
             this._turnStatus.Name = "_turnStatus";
             this._turnStatus.ReadOnly = true;
-            this._turnStatus.Size = new System.Drawing.Size(963, 54);
+            this._turnStatus.Size = new System.Drawing.Size(1044, 54);
             this._turnStatus.TabIndex = 1;
             this._turnStatus.TabStop = false;
             this._turnStatus.Text = "Turn 0 - Player";
@@ -130,7 +131,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(987, 59);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1068, 59);
             this.tableLayoutPanel1.TabIndex = 4;
             // 
             // _secondTile
@@ -138,10 +139,10 @@
             this._secondTile.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this._secondTile.Dock = System.Windows.Forms.DockStyle.Fill;
             this._secondTile.Font = new System.Drawing.Font("Segoe UI", 30F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._secondTile.Location = new System.Drawing.Point(332, 3);
+            this._secondTile.Location = new System.Drawing.Point(359, 3);
             this._secondTile.Name = "_secondTile";
             this._secondTile.ReadOnly = true;
-            this._secondTile.Size = new System.Drawing.Size(323, 54);
+            this._secondTile.Size = new System.Drawing.Size(350, 54);
             this._secondTile.TabIndex = 2;
             this._secondTile.TabStop = false;
             this._secondTile.Text = "B";
@@ -152,10 +153,10 @@
             this._thirdTile.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this._thirdTile.Dock = System.Windows.Forms.DockStyle.Fill;
             this._thirdTile.Font = new System.Drawing.Font("Segoe UI", 30F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._thirdTile.Location = new System.Drawing.Point(661, 3);
+            this._thirdTile.Location = new System.Drawing.Point(715, 3);
             this._thirdTile.Name = "_thirdTile";
             this._thirdTile.ReadOnly = true;
-            this._thirdTile.Size = new System.Drawing.Size(323, 54);
+            this._thirdTile.Size = new System.Drawing.Size(350, 54);
             this._thirdTile.TabIndex = 1;
             this._thirdTile.TabStop = false;
             this._thirdTile.Text = "C";
@@ -169,7 +170,7 @@
             this._firstTile.Location = new System.Drawing.Point(3, 3);
             this._firstTile.Name = "_firstTile";
             this._firstTile.ReadOnly = true;
-            this._firstTile.Size = new System.Drawing.Size(323, 54);
+            this._firstTile.Size = new System.Drawing.Size(350, 54);
             this._firstTile.TabIndex = 0;
             this._firstTile.TabStop = false;
             this._firstTile.Text = "A";
@@ -212,7 +213,7 @@
             this._addPlayerLink.TabIndex = 7;
             this._addPlayerLink.TabStop = true;
             this._addPlayerLink.Text = "Add";
-            this._addPlayerLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
+            this._addPlayerLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this._addPlayerLink_LinkClicked);
             // 
             // _deletePlayerLink
             // 
@@ -223,7 +224,7 @@
             this._deletePlayerLink.TabIndex = 6;
             this._deletePlayerLink.TabStop = true;
             this._deletePlayerLink.Text = "Delete";
-            this._deletePlayerLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            this._deletePlayerLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this._deletePlayerLink_LinkClicked);
             // 
             // groupBox2
             // 
@@ -233,7 +234,7 @@
             this.groupBox2.Controls.Add(this._turnHistoryText);
             this.groupBox2.Location = new System.Drawing.Point(222, 153);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(515, 458);
+            this.groupBox2.Size = new System.Drawing.Size(596, 458);
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "History";
@@ -247,7 +248,7 @@
             this._turnHistoryText.Name = "_turnHistoryText";
             this._turnHistoryText.ReadOnly = true;
             this._turnHistoryText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this._turnHistoryText.Size = new System.Drawing.Size(509, 439);
+            this._turnHistoryText.Size = new System.Drawing.Size(590, 439);
             this._turnHistoryText.TabIndex = 0;
             this._turnHistoryText.TabStop = false;
             // 
@@ -257,7 +258,7 @@
             this._robberLocationLabel.AutoSize = true;
             this._robberLocationLabel.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this._robberLocationLabel.ForeColor = System.Drawing.Color.Firebrick;
-            this._robberLocationLabel.Location = new System.Drawing.Point(44, 3);
+            this._robberLocationLabel.Location = new System.Drawing.Point(-3, 3);
             this._robberLocationLabel.Name = "_robberLocationLabel";
             this._robberLocationLabel.Size = new System.Drawing.Size(119, 37);
             this._robberLocationLabel.TabIndex = 8;
@@ -271,7 +272,7 @@
             this._robberLocation.FormattingEnabled = true;
             this._robberLocation.Items.AddRange(new object[] {
             "A"});
-            this._robberLocation.Location = new System.Drawing.Point(169, 6);
+            this._robberLocation.Location = new System.Drawing.Point(122, 6);
             this._robberLocation.Name = "_robberLocation";
             this._robberLocation.Size = new System.Drawing.Size(108, 38);
             this._robberLocation.TabIndex = 9;
@@ -281,10 +282,10 @@
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox3.Controls.Add(this._assignPropertiesLink);
-            this.groupBox3.Controls.Add(this._gameStatistics);
+            this.groupBox3.Controls.Add(this._robberStatistics);
             this.groupBox3.Controls.Add(this.tableLayoutPanel2);
             this.groupBox3.Controls.Add(this._letterDistributionAnalysis);
-            this.groupBox3.Location = new System.Drawing.Point(743, 153);
+            this.groupBox3.Location = new System.Drawing.Point(824, 153);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(242, 456);
             this.groupBox3.TabIndex = 10;
@@ -303,17 +304,17 @@
             this._assignPropertiesLink.Visible = false;
             this._assignPropertiesLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this._assignPropertiesLink_LinkClicked);
             // 
-            // _gameStatistics
+            // _robberStatistics
             // 
-            this._gameStatistics.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this._robberStatistics.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this._gameStatistics.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this._gameStatistics.Location = new System.Drawing.Point(7, 417);
-            this._gameStatistics.Name = "_gameStatistics";
-            this._gameStatistics.ReadOnly = true;
-            this._gameStatistics.Size = new System.Drawing.Size(225, 13);
-            this._gameStatistics.TabIndex = 2;
-            this._gameStatistics.TabStop = false;
+            this._robberStatistics.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this._robberStatistics.Location = new System.Drawing.Point(7, 417);
+            this._robberStatistics.Name = "_robberStatistics";
+            this._robberStatistics.ReadOnly = true;
+            this._robberStatistics.Size = new System.Drawing.Size(225, 13);
+            this._robberStatistics.TabIndex = 2;
+            this._robberStatistics.TabStop = false;
             // 
             // tableLayoutPanel2
             // 
@@ -369,10 +370,11 @@
             // _tileCountSelector
             // 
             this._tileCountSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this._tileCountSelector.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this._tileCountSelector.FormattingEnabled = true;
             this._tileCountSelector.Location = new System.Drawing.Point(122, 11);
             this._tileCountSelector.Name = "_tileCountSelector";
-            this._tileCountSelector.Size = new System.Drawing.Size(61, 21);
+            this._tileCountSelector.Size = new System.Drawing.Size(61, 19);
             this._tileCountSelector.TabIndex = 11;
             // 
             // label2
@@ -386,11 +388,14 @@
             // 
             // _randomnessTypeSelector
             // 
+            this._randomnessTypeSelector.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this._randomnessTypeSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this._randomnessTypeSelector.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this._randomnessTypeSelector.FormattingEnabled = true;
             this._randomnessTypeSelector.Location = new System.Drawing.Point(280, 11);
             this._randomnessTypeSelector.Name = "_randomnessTypeSelector";
-            this._randomnessTypeSelector.Size = new System.Drawing.Size(121, 21);
+            this._randomnessTypeSelector.Size = new System.Drawing.Size(246, 19);
             this._randomnessTypeSelector.TabIndex = 13;
             this._randomnessTypeSelector.SelectionChangeCommitted += new System.EventHandler(this._randomnessTypeSelector_SelectionChangeCommitted);
             // 
@@ -406,6 +411,11 @@
             // _baseWeightSelector
             // 
             this._baseWeightSelector.Location = new System.Drawing.Point(56, 10);
+            this._baseWeightSelector.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
             this._baseWeightSelector.Minimum = new decimal(new int[] {
             1,
             0,
@@ -415,7 +425,7 @@
             this._baseWeightSelector.Size = new System.Drawing.Size(39, 20);
             this._baseWeightSelector.TabIndex = 15;
             this._baseWeightSelector.Value = new decimal(new int[] {
-            1,
+            1000,
             0,
             0,
             0});
@@ -432,6 +442,11 @@
             // _addWeightSelector
             // 
             this._addWeightSelector.Location = new System.Drawing.Point(144, 10);
+            this._addWeightSelector.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
             this._addWeightSelector.Minimum = new decimal(new int[] {
             1,
             0,
@@ -441,7 +456,7 @@
             this._addWeightSelector.Size = new System.Drawing.Size(39, 20);
             this._addWeightSelector.TabIndex = 17;
             this._addWeightSelector.Value = new decimal(new int[] {
-            1,
+            100,
             0,
             0,
             0});
@@ -452,7 +467,7 @@
             this._weightingSettings.Controls.Add(this._addWeightLabel);
             this._weightingSettings.Controls.Add(this._baseWeightSelector);
             this._weightingSettings.Controls.Add(this._baseWeightLabel);
-            this._weightingSettings.Location = new System.Drawing.Point(407, 2);
+            this._weightingSettings.Location = new System.Drawing.Point(0, 0);
             this._weightingSettings.Name = "_weightingSettings";
             this._weightingSettings.Size = new System.Drawing.Size(201, 47);
             this._weightingSettings.TabIndex = 14;
@@ -463,17 +478,18 @@
             this._robberSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._robberSettings.Controls.Add(this._robberLocation);
             this._robberSettings.Controls.Add(this._robberLocationLabel);
-            this._robberSettings.Location = new System.Drawing.Point(614, 2);
+            this._robberSettings.Location = new System.Drawing.Point(742, 2);
             this._robberSettings.Name = "_robberSettings";
-            this._robberSettings.Size = new System.Drawing.Size(280, 47);
+            this._robberSettings.Size = new System.Drawing.Size(233, 47);
             this._robberSettings.TabIndex = 15;
             this._robberSettings.Visible = false;
             // 
             // _multiplicativeSettings
             // 
+            this._multiplicativeSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._multiplicativeSettings.Controls.Add(this._weightFactorSelector);
             this._multiplicativeSettings.Controls.Add(this.label4);
-            this._multiplicativeSettings.Location = new System.Drawing.Point(407, 2);
+            this._multiplicativeSettings.Location = new System.Drawing.Point(532, 2);
             this._multiplicativeSettings.Name = "_multiplicativeSettings";
             this._multiplicativeSettings.Size = new System.Drawing.Size(201, 47);
             this._multiplicativeSettings.TabIndex = 18;
@@ -518,24 +534,14 @@
             // 
             // _groupSelectSettings
             // 
+            this._groupSelectSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._groupSelectSettings.Controls.Add(this._doubleRefreshSelector);
+            this._groupSelectSettings.Controls.Add(this._weightingSettings);
             this._groupSelectSettings.Controls.Add(this._refreshGroupingsSelector);
-            this._groupSelectSettings.Location = new System.Drawing.Point(407, 2);
+            this._groupSelectSettings.Location = new System.Drawing.Point(532, 2);
             this._groupSelectSettings.Name = "_groupSelectSettings";
             this._groupSelectSettings.Size = new System.Drawing.Size(201, 47);
             this._groupSelectSettings.TabIndex = 18;
-            this._groupSelectSettings.Visible = false;
-            // 
-            // _refreshGroupingsSelector
-            // 
-            this._refreshGroupingsSelector.AutoSize = true;
-            this._refreshGroupingsSelector.Location = new System.Drawing.Point(8, 6);
-            this._refreshGroupingsSelector.Name = "_refreshGroupingsSelector";
-            this._refreshGroupingsSelector.Size = new System.Drawing.Size(114, 17);
-            this._refreshGroupingsSelector.TabIndex = 18;
-            this._refreshGroupingsSelector.Text = "Refresh Groupings";
-            this._refreshGroupingsSelector.UseVisualStyleBackColor = true;
-            this._refreshGroupingsSelector.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // _doubleRefreshSelector
             // 
@@ -548,14 +554,36 @@
             this._doubleRefreshSelector.Text = "More Even";
             this._doubleRefreshSelector.UseVisualStyleBackColor = true;
             // 
-            // Form1
+            // _refreshGroupingsSelector
+            // 
+            this._refreshGroupingsSelector.AutoSize = true;
+            this._refreshGroupingsSelector.Location = new System.Drawing.Point(8, 6);
+            this._refreshGroupingsSelector.Name = "_refreshGroupingsSelector";
+            this._refreshGroupingsSelector.Size = new System.Drawing.Size(114, 17);
+            this._refreshGroupingsSelector.TabIndex = 18;
+            this._refreshGroupingsSelector.Text = "Refresh Groupings";
+            this._refreshGroupingsSelector.UseVisualStyleBackColor = true;
+            this._refreshGroupingsSelector.CheckedChanged += new System.EventHandler(this._refreshGroupingsSelector_CheckedChanged);
+            // 
+            // _startNewGameButton
+            // 
+            this._startNewGameButton.Location = new System.Drawing.Point(15, 43);
+            this._startNewGameButton.Name = "_startNewGameButton";
+            this._startNewGameButton.Size = new System.Drawing.Size(111, 24);
+            this._startNewGameButton.TabIndex = 19;
+            this._startNewGameButton.Text = "Start New Game";
+            this._startNewGameButton.UseVisualStyleBackColor = true;
+            this._startNewGameButton.Visible = false;
+            this._startNewGameButton.Click += new System.EventHandler(this._startNewGameButton_Click);
+            // 
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(987, 614);
+            this.ClientSize = new System.Drawing.Size(1068, 614);
             this.Controls.Add(this._groupSelectSettings);
-            this.Controls.Add(this._weightingSettings);
+            this.Controls.Add(this._startNewGameButton);
             this.Controls.Add(this._multiplicativeSettings);
             this.Controls.Add(this._robberSettings);
             this.Controls.Add(this._randomnessTypeSelector);
@@ -568,7 +596,8 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this._rollButton);
-            this.Name = "Form1";
+            this.MinimumSize = new System.Drawing.Size(1070, 640);
+            this.Name = "MainForm";
             this.ShowIcon = false;
             this.Text = "Catan Roller";
             this.tableLayoutPanel1.ResumeLayout(false);
@@ -617,7 +646,7 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TextBox _letterDistributionAnalysis;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.TextBox _gameStatistics;
+        private System.Windows.Forms.TextBox _robberStatistics;
         private System.Windows.Forms.TextBox _letterDistributionByLetter;
         private System.Windows.Forms.LinkLabel _assignPropertiesLink;
         private System.Windows.Forms.TextBox _letterDistributionByCount;
@@ -636,6 +665,7 @@
         private System.Windows.Forms.Panel _groupSelectSettings;
         private System.Windows.Forms.CheckBox _refreshGroupingsSelector;
         private System.Windows.Forms.CheckBox _doubleRefreshSelector;
+        private System.Windows.Forms.Button _startNewGameButton;
     }
 }
 

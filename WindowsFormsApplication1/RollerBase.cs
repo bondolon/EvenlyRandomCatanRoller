@@ -47,8 +47,8 @@ namespace WindowsFormsApplication1
 
             TurnNumber++;
 
-            int dieA = _roller.Next(1, 6);
-            int dieB = _roller.Next(1, 6);
+            int dieA = _roller.Next(1, 7);
+            int dieB = _roller.Next(1, 7);
 
             if (dieA + dieB == 7) //Robber
             {

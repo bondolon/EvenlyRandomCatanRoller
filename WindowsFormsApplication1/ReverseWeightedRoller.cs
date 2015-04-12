@@ -26,7 +26,7 @@ namespace WindowsFormsApplication1
         {
             var totalSum = _weightedUsableTiles.Values.Sum();
 
-            var rolledValue = _roller.Next(1, totalSum);
+            var rolledValue = _roller.Next(1, totalSum + 1);
 
             int index = 0;
             int runningTotal = 0;

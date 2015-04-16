@@ -5,9 +5,9 @@ using System.Text;
 
 namespace WindowsFormsApplication1
 {
-    class GroupedSelection : RollerBase
+    class GroupedSelectionRoller : RollerBase
     {
-        public GroupedSelection(int tileCount, bool refreshGroupings, int refreshTurnCount)
+        public GroupedSelectionRoller(int tileCount, bool refreshGroupings, int refreshTurnCount)
             : base(tileCount)
         {
             FillGroupings();
@@ -18,7 +18,7 @@ namespace WindowsFormsApplication1
 
         private static readonly int[] _rolls = new int[] { 2, 3, 4, 5, 6, 8, 9, 10, 11, 12 };
 
-        private Dictionary<int, Tuple<string, string, string>> _groupedTiles;
+        protected Dictionary<int, Tuple<string, string, string>> _groupedTiles;
 
         private bool _refreshGroupings;
         private int _refreshTurnCount;
@@ -35,10 +35,10 @@ namespace WindowsFormsApplication1
             Action<string> useTile =
                 tile =>
                 {
+                    _usedIndices.Add(1);
+
                     if (!string.IsNullOrEmpty(tile))
                     {
-                        _usedIndices.Add(1);
-
                         SetRollOutcomeText(tile, _usedIndices.Count);
                     }
                 };

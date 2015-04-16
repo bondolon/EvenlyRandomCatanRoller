@@ -8,10 +8,12 @@ namespace WindowsFormsApplication1
     enum RandomnessType
     {
         Unknown = 0,
-        Fully = 1,
+        FullyRandom = 1,
         ExhaustivelyBinned = 2,
         ReverseWeighted = 3,
         ReverseMultiplicativeWeighted = 4,
         GroupedSelection = 5,
+        GroupedSelectionWithShifting = 6,
+        GroupedSelectionWithRefresh = 7,
     }
 }

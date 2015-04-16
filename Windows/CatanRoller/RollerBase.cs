@@ -47,10 +47,9 @@ namespace WindowsFormsApplication1
 
             TurnNumber++;
 
-            int dieA = _roller.Next(1, 7);
-            int dieB = _roller.Next(1, 7);
+            var roll = GetDiceRoll();
 
-            if (dieA + dieB == 7) //Robber
+            if (roll == 7) //Robber
             {
                 TurnOutcome = ROBBER_TEXT;
                 FirstTile = "HANDS";
@@ -61,7 +60,7 @@ namespace WindowsFormsApplication1
             {
                 int resourceCount = 2;
 
-                if (dieA == dieB && (dieA == 1 || dieA == 6))
+                if (roll == 2 || roll == 12)
                 {
                     if (_tileCount == 18)
                     {
@@ -75,7 +74,7 @@ namespace WindowsFormsApplication1
 
                 while (_usedIndices.Count < resourceCount)
                 {
-                    SingleRoll(dieA + dieB);
+                    SingleRoll(roll);
                 }
 
                 SetTurnOutcomeText();
@@ -162,6 +161,11 @@ namespace WindowsFormsApplication1
         protected virtual void SingleRoll(int roll)
         {
             throw new NotImplementedException("No valid randomness type was selected.");
+        }
+
+        protected int GetDiceRoll()
+        {
+            return _roller.Next(1, 7) + _roller.Next(1, 7);
         }
     }
 }

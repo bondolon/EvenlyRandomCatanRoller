@@ -15,7 +15,7 @@ using System.Windows.Forms;
 
 namespace WindowsFormsApplication1
 {
-    public partial class MainForm : Form
+    public partial class MainForm2 : Form
     {
         private const double _weightingNumber = 1.5d;
 
@@ -23,9 +23,9 @@ namespace WindowsFormsApplication1
 
         private static readonly Dictionary<string, RandomnessType?> _randomnessTypes = new Dictionary<string, RandomnessType?> 
         { 
-            { "Catan-like", null }, 
-            { "Catan-like", RandomnessType.GroupedSelection },
-            { "Catan-like with shuffled tiles", RandomnessType.GroupedSelectionWithRefresh },
+            { "Catan-like", RandomnessType.GroupedSelection }, 
+            { "Catan-like with shuffled groups", RandomnessType.GroupedSelectionWithRefresh },
+            { "Catan-like with cutthroat groups", RandomnessType.GroupedSelectionWithShifting },
             { "Each tile selected once", RandomnessType.ExhaustivelyBinned }, 
             { "Weighted random tile selection", RandomnessType.ReverseWeighted },
             { "Random tile selection", RandomnessType.FullyRandom }, 
@@ -41,26 +41,27 @@ namespace WindowsFormsApplication1
         private int _gameCount = 1000;
 #endif
 
-        public MainForm()
+        public MainForm2()
         {
             InitializeComponent();
 
+            _tileCountSelector.Items.Clear();
             foreach (var tileCount in _boardCounts.Keys)
             {
                 _tileCountSelector.Items.Add(tileCount);
             }
-
             _tileCountSelector.SelectedIndex = 0;
 
+            _randomnessTypeSelector.Items.Clear();
             foreach (var randomnessType in _randomnessTypes.Keys)
             {
                 _randomnessTypeSelector.Items.Add(randomnessType);
             }
-
-            _randomnessTypeSelector.SelectedIndex = 0;
+            _randomnessTypeSelector.SelectedIndex = 1;
 
             _turnStatus.Text = _firstTile.Text = _secondTile.Text = _thirdTile.Text = "";
             _deletePlayerLink.Select();
+            _playersList.Items.Clear();
 
 #if TESTROLL
             _playersList.Items.Add("Agrippa");
@@ -85,10 +86,6 @@ namespace WindowsFormsApplication1
                 _assignPropertiesLink.Enabled = _assignPropertiesLink.Visible =
                 _randomnessTypeSelector.Enabled = 
                 _tileCountSelector.Enabled = 
-                _baseWeightSelector.Enabled =
-                _addWeightSelector.Enabled =
-                _refreshGroupingsSelector.Enabled =
-                _doubleRefreshSelector.Enabled =
                 false;
 
             _startNewGameButton.Visible = true;
@@ -117,22 +114,23 @@ namespace WindowsFormsApplication1
                         break;
 
                     case RandomnessType.ReverseWeighted:
-                        _roller = new ReverseWeightedRoller(tileCount, (int)_baseWeightSelector.Value, (int)_addWeightSelector.Value);
+                        _roller = new ReverseWeightedRoller(tileCount, 100, 1000);
                         break;
 
                     case RandomnessType.ReverseMultiplicativeWeighted:
-                        _roller = new ReverseMultiplicativeWeightedRoller(tileCount, (int)_weightFactorSelector.Value);
+                        _roller = new ReverseMultiplicativeWeightedRoller(tileCount, -1);
                         break;
 
                     case RandomnessType.GroupedSelection:
-                        int refreshTurns = _playersList.Items.Count;
+                        _roller = new GroupedSelectionRoller(tileCount, false, -1);
+                        break;
 
-                        if (_doubleRefreshSelector.Checked)
-                        {
-                            refreshTurns /= 2;
-                        }
+                    case RandomnessType.GroupedSelectionWithRefresh:
+                        _roller = new GroupedSelectionRoller(tileCount, true, _playersList.Items.Count);
+                        break;
 
-                        _roller = new GroupedSelectionRoller(tileCount, _refreshGroupingsSelector.Checked, refreshTurns);
+                    case RandomnessType.GroupedSelectionWithShifting:
+                        _roller = new GroupedSelectionWithShiftingRoller(tileCount);
                         break;
 
                     case RandomnessType.Unknown:
@@ -142,6 +140,8 @@ namespace WindowsFormsApplication1
 
                 _robberLocation.DataSource = new List<string>(new string[] { "DESERT" }.Concat(_roller.TileHistory.Keys));
                 _robberSettings.Visible = true;
+
+                SetRobberText(0);
 
 #if !TESTROLL
                 _assignPropertiesLink_LinkClicked(sender, null);
@@ -209,7 +209,7 @@ namespace WindowsFormsApplication1
                 _robberLocation.Focus();
                 _robberCount++;
 
-                _robberStatistics.Text = string.Format("Robber Turns: {0}", _robberCount);
+                SetRobberText(_robberCount);
             }
 
             _turnHistory.Add(string.Format("{0} ({1}) - {2}", _roller.TurnNumber, _playersList.SelectedItem, _roller.TurnOutcome));
@@ -288,18 +288,6 @@ namespace WindowsFormsApplication1
             }
         }
 
-        private void _randomnessTypeSelector_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            //_weightingSettings.Visible = (_randomnessTypes[(string)_randomnessTypeSelector.SelectedItem] == RandomnessType.ReverseWeighted);
-            //_multiplicativeSettings.Visible = (_randomnessTypes[(string)_randomnessTypeSelector.SelectedItem] == RandomnessType.ReverseMultiplicativeWeighted);
-            _groupSelectSettings.Visible = (_randomnessTypes[(string)_randomnessTypeSelector.SelectedItem] == RandomnessType.GroupedSelection);
-        }
-
-        private void _refreshGroupingsSelector_CheckedChanged(object sender, EventArgs e)
-        {
-            _doubleRefreshSelector.Enabled = _refreshGroupingsSelector.Checked;
-        }
-
         private void _startNewGameButton_Click(object sender, EventArgs e)
         {
             _turnStatus.Text =
@@ -321,10 +309,6 @@ namespace WindowsFormsApplication1
                 _addPlayerLink.Enabled = _addPlayerLink.Visible =
                 _randomnessTypeSelector.Enabled =
                 _tileCountSelector.Enabled =
-                _baseWeightSelector.Enabled =
-                _addWeightSelector.Enabled =
-                _refreshGroupingsSelector.Enabled =
-                _doubleRefreshSelector.Enabled =
                 true;
 
             _turnHistory = new List<string>();
@@ -332,9 +316,15 @@ namespace WindowsFormsApplication1
             _turnHistoryText.Text =
                 _letterDistributionByLetter.Text =
                 _letterDistributionByCount.Text =
-                _robberStatistics.Text = 
                 _letterDistributionAnalysis.Text = 
                 string.Empty;
+
+            SetRobberText(0);
+        }
+
+        private void SetRobberText(int robberTurns)
+        {
+            _robberStatistics.Text = string.Format("Robber Turns: {0}", robberTurns);
         }
     }
 }

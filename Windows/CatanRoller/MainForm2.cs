@@ -161,12 +161,12 @@ namespace WindowsFormsApplication1
 
             _turnStatus.Text = string.Format("TURN {0} - {1}", _roller.TurnNumber, _playersList.SelectedItem);
 
-            _firstTile.Text = _roller.FirstTile;
-            _secondTile.Text = _roller.SecondTile;
+            _firstTile.Text = GetDisplayText(_roller.FirstTile);
+            _secondTile.Text = GetDisplayText(_roller.SecondTile);
 
             if (!string.IsNullOrEmpty(_roller.ThirdTile))
             {
-                _thirdTile.Text = _roller.ThirdTile;
+                _thirdTile.Text = GetDisplayText(_roller.ThirdTile);
             }
 
             _letterDistributionByLetter.Text = string.Empty;
@@ -325,6 +325,23 @@ namespace WindowsFormsApplication1
         private void SetRobberText(int robberTurns)
         {
             _robberStatistics.Text = string.Format("Robber Turns: {0}", robberTurns);
+        }
+
+        private string GetDisplayText(string rollOutcome)
+        {
+            if (!string.IsNullOrEmpty(rollOutcome))
+            {
+                if (rollOutcome.Contains("*"))
+                {
+                    return "*";
+                }
+                else
+                {
+                    return rollOutcome;
+                }
+            }
+
+            return string.Empty;
         }
     }
 }

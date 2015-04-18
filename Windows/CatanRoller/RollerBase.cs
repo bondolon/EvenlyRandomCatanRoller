@@ -79,16 +79,16 @@ namespace WindowsFormsApplication1
 
                 SetTurnOutcomeText();
 
-                TileHistory[FirstTile] += 1;
+                TileHistory[GetTileText(FirstTile)] += 1;
 
                 if (!string.IsNullOrEmpty(SecondTile))
                 {
-                    TileHistory[SecondTile] += 1;
+                    TileHistory[GetTileText(SecondTile)] += 1;
                 }
 
                 if (!string.IsNullOrEmpty(ThirdTile))
                 {
-                    TileHistory[ThirdTile] += 1;
+                    TileHistory[GetTileText(ThirdTile)] += 1;
                 }
             }
         }
@@ -97,20 +97,16 @@ namespace WindowsFormsApplication1
         {
             if (!string.IsNullOrEmpty(tileText))
             {
-                string outcomeText;
+                string outcomeText = tileText;
 
                 if (tileText == _robberLocation)
                 {
-                    outcomeText = "*";
+                    outcomeText += "*";
                 }
-                else
-                {
-                    outcomeText = tileText;
 
-                    if (MappedTiles != null)
-                    {
-                        outcomeText += " - " + MappedTiles[tileText];
-                    }
+                if (MappedTiles != null)
+                {
+                    outcomeText += " - " + MappedTiles[tileText];
                 }
 
                 if (tileNumber == 1)
@@ -133,17 +129,19 @@ namespace WindowsFormsApplication1
             TurnOutcome = string.Empty;
 
             Func<string, string> getRollOutcomeText =
-                tileText =>
+                rollText =>
                 {
                     string rollOutcome = string.Empty;
 
-                    if (!string.IsNullOrEmpty(tileText))
+                    if (!string.IsNullOrEmpty(rollText))
                     {
+                        var tileText = GetTileText(rollText);
+
                         rollOutcome += tileText + ((tileText == _robberLocation) ? "*" : "");
 
                         if (MappedTiles != null)
                         {
-                            rollOutcome += ((tileText == _robberLocation) ? "*" : "") + " (" + MappedTiles[tileText][0] + ")";
+                            rollOutcome += " (" + MappedTiles[tileText][0] + ")";
                         }
                     }
 
@@ -166,6 +164,11 @@ namespace WindowsFormsApplication1
         protected int GetDiceRoll()
         {
             return _roller.Next(1, 7) + _roller.Next(1, 7);
+        }
+
+        public static string GetTileText(string rollOutcome)
+        {
+            return rollOutcome[0].ToString();
         }
     }
 }

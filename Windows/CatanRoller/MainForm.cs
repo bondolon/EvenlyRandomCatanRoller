@@ -106,39 +106,39 @@ namespace WindowsFormsApplication1
                 var randomnessType = _randomnessTypes[(string)_randomnessTypeSelector.SelectedItem];
 
                 int tileCount = _boardCounts[(string)_tileCountSelector.SelectedItem];
-                switch (randomnessType)
-                {
-                    case RandomnessType.FullyRandom:
-                        _roller = new FullyRandomRoller(tileCount);
-                        break;
+                //switch (randomnessType)
+                //{
+                //    case RandomnessType.FullyRandom:
+                //        _roller = new FullyRandomRoller(tileCount);
+                //        break;
 
-                    case RandomnessType.ExhaustivelyBinned:
-                        _roller = new ExhaustivelyBinnedRoller(tileCount);
-                        break;
+                //    case RandomnessType.ExhaustivelyBinned:
+                //        _roller = new ExhaustivelyBinnedRoller(tileCount);
+                //        break;
 
-                    case RandomnessType.ReverseWeighted:
-                        _roller = new ReverseWeightedRoller(tileCount, (int)_baseWeightSelector.Value, (int)_addWeightSelector.Value);
-                        break;
+                //    case RandomnessType.ReverseWeighted:
+                //        _roller = new ReverseWeightedRoller(tileCount, (int)_baseWeightSelector.Value, (int)_addWeightSelector.Value);
+                //        break;
 
-                    case RandomnessType.ReverseMultiplicativeWeighted:
-                        _roller = new ReverseMultiplicativeWeightedRoller(tileCount, (int)_weightFactorSelector.Value);
-                        break;
+                //    case RandomnessType.ReverseMultiplicativeWeighted:
+                //        _roller = new ReverseMultiplicativeWeightedRoller(tileCount, (int)_weightFactorSelector.Value);
+                //        break;
 
-                    case RandomnessType.GroupedSelection:
-                        int refreshTurns = _playersList.Items.Count;
+                //    case RandomnessType.GroupedSelection:
+                //        int refreshTurns = _playersList.Items.Count;
 
-                        if (_doubleRefreshSelector.Checked)
-                        {
-                            refreshTurns /= 2;
-                        }
+                //        if (_doubleRefreshSelector.Checked)
+                //        {
+                //            refreshTurns /= 2;
+                //        }
 
-                        _roller = new GroupedSelectionRoller(tileCount, _refreshGroupingsSelector.Checked, refreshTurns);
-                        break;
+                //        _roller = new GroupedSelectionRoller(tileCount, _refreshGroupingsSelector.Checked, refreshTurns);
+                //        break;
 
-                    case RandomnessType.Unknown:
-                    default:
-                        return;
-                }
+                //    case RandomnessType.Unknown:
+                //    default:
+                //        return;
+                //}
 
                 _robberLocation.DataSource = new List<string>(new string[] { "DESERT" }.Concat(_roller.TileHistory.Keys));
                 _robberSettings.Visible = true;

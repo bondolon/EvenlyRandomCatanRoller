@@ -20,9 +20,13 @@ namespace WindowsFormsApplication1
         public string SecondTile;
         public string ThirdTile;
 
+        public string RobberTile;
+
+        public bool AutomaticRobberSelection;
+
         private static readonly string[] _tiles = new string[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "AA", "BB" };
 
-        protected RollerBase(int tileCount) 
+        protected RollerBase(int tileCount, bool automaticRobberSelection) 
         {
             _tileCount = tileCount;
 
@@ -31,6 +35,8 @@ namespace WindowsFormsApplication1
                 UsableTiles.Add(_tiles[i]);
                 TileHistory.Add(_tiles[i], 0);
             }
+
+            AutomaticRobberSelection = automaticRobberSelection;
         }
 
         protected readonly int _tileCount;
@@ -55,6 +61,8 @@ namespace WindowsFormsApplication1
                 FirstTile = "HANDS";
                 SecondTile = "UP";
                 ThirdTile = "PARTNER!!";
+
+                RobberTile = UsableTiles[_roller.Next(0, UsableTiles.Count)];
             }
             else
             {
@@ -168,7 +176,7 @@ namespace WindowsFormsApplication1
 
         public static string GetTileText(string rollOutcome)
         {
-            return rollOutcome[0].ToString();
+            return rollOutcome.Split(' ')[0];
         }
     }
 }

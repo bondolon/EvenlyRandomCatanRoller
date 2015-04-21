@@ -56,6 +56,7 @@
             this._robberSettings = new System.Windows.Forms.Panel();
             this._startNewGameButton = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this._automaticRobberSelectionSelector = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -95,7 +96,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(54, 126);
+            this.label1.Location = new System.Drawing.Point(54, 135);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(104, 13);
             this.label1.TabIndex = 3;
@@ -184,13 +185,14 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this._automaticRobberSelectionSelector);
             this.groupBox1.Controls.Add(this._tileCountSelector);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this._randomnessTypeSelector);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Location = new System.Drawing.Point(0, 2);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(215, 183);
+            this.groupBox1.Size = new System.Drawing.Size(215, 213);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Settings";
@@ -201,7 +203,7 @@
             this._tileCountSelector.Items.AddRange(new object[] {
             "18+1D",
             "28+1D"});
-            this._tileCountSelector.Location = new System.Drawing.Point(6, 142);
+            this._tileCountSelector.Location = new System.Drawing.Point(6, 151);
             this._tileCountSelector.Name = "_tileCountSelector";
             this._tileCountSelector.Size = new System.Drawing.Size(202, 30);
             this._tileCountSelector.TabIndex = 14;
@@ -213,12 +215,13 @@
             "Catan-like",
             "Catan-like w/Shuffling",
             "Catan-like w/Cutthroat",
+            "Reverse Weighted Catan-like",
             "Random (Binned Exhaustion)",
             "Reverse Weighted Random w/Repl.",
             "Random w/Repl."});
             this._randomnessTypeSelector.Location = new System.Drawing.Point(6, 33);
             this._randomnessTypeSelector.Name = "_randomnessTypeSelector";
-            this._randomnessTypeSelector.Size = new System.Drawing.Size(202, 82);
+            this._randomnessTypeSelector.Size = new System.Drawing.Size(202, 95);
             this._randomnessTypeSelector.TabIndex = 13;
             // 
             // label2
@@ -426,6 +429,16 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Players";
             // 
+            // _automaticRobberSelectionSelector
+            // 
+            this._automaticRobberSelectionSelector.AutoSize = true;
+            this._automaticRobberSelectionSelector.Location = new System.Drawing.Point(28, 187);
+            this._automaticRobberSelectionSelector.Name = "_automaticRobberSelectionSelector";
+            this._automaticRobberSelectionSelector.Size = new System.Drawing.Size(158, 17);
+            this._automaticRobberSelectionSelector.TabIndex = 15;
+            this._automaticRobberSelectionSelector.Text = "Automatic Robber Selection";
+            this._automaticRobberSelectionSelector.UseVisualStyleBackColor = true;
+            // 
             // MainForm2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -494,6 +507,7 @@
         private System.Windows.Forms.ListBox _randomnessTypeSelector;
         private System.Windows.Forms.ListBox _tileCountSelector;
         private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.CheckBox _automaticRobberSelectionSelector;
     }
 }
 

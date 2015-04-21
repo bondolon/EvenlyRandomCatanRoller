@@ -7,8 +7,8 @@ namespace WindowsFormsApplication1
 {
     class ReverseMultiplicativeWeightedRoller : RollerBase
     {
-        public ReverseMultiplicativeWeightedRoller(int tileCount, int weightFactor)
-            : base(tileCount)
+        public ReverseMultiplicativeWeightedRoller(int tileCount, bool automaticRobberSelection, int weightFactor)
+            : base(tileCount, automaticRobberSelection)
         {
             foreach (var tile in UsableTiles)
             {

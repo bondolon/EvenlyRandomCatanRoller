@@ -84,6 +84,7 @@
       <DependentUpon>ResourceSelector.cs</DependentUpon>
     </Compile>
     <Compile Include="ReverseMultiplicativeWeightedRoller.cs" />
+    <Compile Include="ReverseWeightedGroupedSelectionRoller.cs" />
     <Compile Include="ReverseWeightedRoller.cs" />
     <Compile Include="RollerBase.cs" />
     <EmbeddedResource Include="AddPlayerDialog.resx">

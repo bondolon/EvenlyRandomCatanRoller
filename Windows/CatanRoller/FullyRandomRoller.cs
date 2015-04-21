@@ -7,7 +7,8 @@ namespace WindowsFormsApplication1
 {
     public class FullyRandomRoller : RollerBase
     {
-        public FullyRandomRoller(int tileCount) : base(tileCount)
+        public FullyRandomRoller(int tileCount, bool automaticRobberSelection) : 
+            base(tileCount, automaticRobberSelection)
         {
 
         }

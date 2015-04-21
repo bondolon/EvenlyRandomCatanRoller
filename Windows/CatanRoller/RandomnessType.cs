@@ -15,5 +15,6 @@ namespace WindowsFormsApplication1
         GroupedSelection = 5,
         GroupedSelectionWithShifting = 6,
         GroupedSelectionWithRefresh = 7,
+        GroupedSelectionReverseWeighted = 8,
     }
 }

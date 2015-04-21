@@ -26,6 +26,7 @@ namespace WindowsFormsApplication1
             { "Catan-like", RandomnessType.GroupedSelection }, 
             { "Catan-like with shuffled groups", RandomnessType.GroupedSelectionWithRefresh },
             { "Catan-like with cutthroat groups", RandomnessType.GroupedSelectionWithShifting },
+            { "Catan-like with reverse weighting", RandomnessType.GroupedSelectionReverseWeighted },
             { "Each tile selected once", RandomnessType.ExhaustivelyBinned }, 
             { "Weighted random tile selection", RandomnessType.ReverseWeighted },
             { "Random tile selection", RandomnessType.FullyRandom }, 
@@ -69,23 +70,24 @@ namespace WindowsFormsApplication1
             _playersList.Items.Add("Calvin");
             _playersList.Items.Add("Democritus");
 
-            _baseWeightSelector.Value = 1;
-            _addWeightSelector.Value = 2;
+//            _baseWeightSelector.Value = 1;
+//            _addWeightSelector.Value = 2;
             _tileCountSelector.SelectedIndex = 1;
 
             _rollButton.Enabled = true;
             _randomnessTypeSelector.SelectedIndex = 0;
-            _randomnessTypeSelector_SelectionChangeCommitted(null, null);            
+//            _randomnessTypeSelector_SelectionChangeCommitted(null, null);            
 #endif
         }
 
         private void _rollButton_Click(object sender, EventArgs e)
         {
-            _deletePlayerLink.Enabled = _deletePlayerLink.Visible = 
-                _addPlayerLink.Enabled = _addPlayerLink.Visible = 
+            _deletePlayerLink.Enabled = _deletePlayerLink.Visible =
+                _addPlayerLink.Enabled = _addPlayerLink.Visible =
                 _assignPropertiesLink.Enabled = _assignPropertiesLink.Visible =
-                _randomnessTypeSelector.Enabled = 
-                _tileCountSelector.Enabled = 
+                _randomnessTypeSelector.Enabled =
+                _tileCountSelector.Enabled =
+                _automaticRobberSelectionSelector.Enabled =
                 false;
 
             _startNewGameButton.Visible = true;
@@ -106,31 +108,35 @@ namespace WindowsFormsApplication1
                 switch (randomnessType)
                 {
                     case RandomnessType.FullyRandom:
-                        _roller = new FullyRandomRoller(tileCount);
+                        _roller = new FullyRandomRoller(tileCount, _automaticRobberSelectionSelector.Checked);
                         break;
 
                     case RandomnessType.ExhaustivelyBinned:
-                        _roller = new ExhaustivelyBinnedRoller(tileCount);
+                        _roller = new ExhaustivelyBinnedRoller(tileCount, _automaticRobberSelectionSelector.Checked);
                         break;
 
                     case RandomnessType.ReverseWeighted:
-                        _roller = new ReverseWeightedRoller(tileCount, 100, 1000);
+                        _roller = new ReverseWeightedRoller(tileCount, _automaticRobberSelectionSelector.Checked, 100, 1000);
                         break;
 
                     case RandomnessType.ReverseMultiplicativeWeighted:
-                        _roller = new ReverseMultiplicativeWeightedRoller(tileCount, -1);
+                        _roller = new ReverseMultiplicativeWeightedRoller(tileCount, _automaticRobberSelectionSelector.Checked, -1);
                         break;
 
                     case RandomnessType.GroupedSelection:
-                        _roller = new GroupedSelectionRoller(tileCount, false, -1);
+                        _roller = new GroupedSelectionRoller(tileCount, _automaticRobberSelectionSelector.Checked, false, -1);
                         break;
 
                     case RandomnessType.GroupedSelectionWithRefresh:
-                        _roller = new GroupedSelectionRoller(tileCount, true, _playersList.Items.Count);
+                        _roller = new GroupedSelectionRoller(tileCount, _automaticRobberSelectionSelector.Checked, true, _playersList.Items.Count);
                         break;
 
                     case RandomnessType.GroupedSelectionWithShifting:
-                        _roller = new GroupedSelectionWithShiftingRoller(tileCount);
+                        _roller = new GroupedSelectionWithShiftingRoller(tileCount, _automaticRobberSelectionSelector.Checked);
+                        break;
+
+                    case RandomnessType.GroupedSelectionReverseWeighted:
+                        _roller = new GroupedSelectionWithReverseWeightingRoller(tileCount, _automaticRobberSelectionSelector.Checked);
                         break;
 
                     case RandomnessType.Unknown:
@@ -206,7 +212,15 @@ namespace WindowsFormsApplication1
 
             if (_roller.TurnOutcome == RollerBase.ROBBER_TEXT)
             {
-                _robberLocation.Focus();
+                if (_automaticRobberSelectionSelector.Checked)
+                {
+                    _robberLocation.SelectedItem = _roller.RobberTile;
+                }
+                else
+                {
+                    _robberLocation.Focus();
+                }
+
                 _robberCount++;
 
                 SetRobberText(_robberCount);
@@ -309,6 +323,7 @@ namespace WindowsFormsApplication1
                 _addPlayerLink.Enabled = _addPlayerLink.Visible =
                 _randomnessTypeSelector.Enabled =
                 _tileCountSelector.Enabled =
+                _automaticRobberSelectionSelector.Enabled = 
                 true;
 
             _turnHistory = new List<string>();

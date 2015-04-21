@@ -7,8 +7,8 @@ namespace WindowsFormsApplication1
 {
     class GroupedSelectionWithShiftingRoller : GroupedSelectionRoller
     {
-        public GroupedSelectionWithShiftingRoller(int tileCount)
-            : base(tileCount, false, 0)
+        public GroupedSelectionWithShiftingRoller(int tileCount, bool automaticRobberSelection)
+            : base(tileCount, automaticRobberSelection, false, 0)
         {
         }
 

@@ -7,8 +7,8 @@ namespace WindowsFormsApplication1
 {
     class GroupedSelectionRoller : RollerBase
     {
-        public GroupedSelectionRoller(int tileCount, bool refreshGroupings, int refreshTurnCount)
-            : base(tileCount)
+        public GroupedSelectionRoller(int tileCount, bool automaticRobberSelection, bool refreshGroupings, int refreshTurnCount)
+            : base(tileCount, automaticRobberSelection)
         {
             FillGroupings();
 

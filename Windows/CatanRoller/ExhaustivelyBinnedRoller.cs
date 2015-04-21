@@ -9,8 +9,8 @@ namespace WindowsFormsApplication1
     {
         private List<string> _tileBin;
 
-        public ExhaustivelyBinnedRoller(int tileCount)
-            : base(tileCount)
+        public ExhaustivelyBinnedRoller(int tileCount, bool automaticRobberSelection)
+            : base(tileCount, automaticRobberSelection)
         {
             _tileBin = new List<string>(UsableTiles);
         }
